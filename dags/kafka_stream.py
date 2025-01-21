@@ -18,7 +18,24 @@ def get_data():
 
     return res
 
-# # Streaming function
+# format data function
+def format_data(res):
+    data = {}
+    data['first_name'] = res['name']['first']
+    data['last_name'] = res['name']['last']
+    data['dob'] = res['dob']['date']
+    data['gender'] = res['gender']
+    data['address'] = f"{res['location']['street']['number']} {res['location']['street']['name']}, {res['location']['city']}, {res['location']['state']}, {res['location']['country']}"
+    data['postal code'] = res['location']['postcode']
+    data['username'] = res['login']['username']
+    data['email'] = res['email']
+    data['phone'] = res['phone']
+    data['registered_date'] = res['registered']['date']
+    data['picture'] = res['picture']['medium']
+
+    return data
+
+# Streaming function
 # def stream_data():
 #     print(json.dumps(res, indent=3))
 
@@ -33,4 +50,5 @@ def get_data():
 #         python_callable=stream_data()
 #     )
 
-stream_data()
+data = get_data()
+print(format_data(data))
