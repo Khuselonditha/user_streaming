@@ -21,11 +21,13 @@ def get_data():
 # format data function
 def format_data(res):
     data = {}
+    location = res['location']
     data['first_name'] = res['name']['first']
     data['last_name'] = res['name']['last']
     data['dob'] = res['dob']['date']
     data['gender'] = res['gender']
-    data['address'] = f"{res['location']['street']['number']} {res['location']['street']['name']}, {res['location']['city']}, {res['location']['state']}, {res['location']['country']}"
+    data['address'] = f"{str(location['street']['number'])} {location['street']['name']}," \
+                      f" {location['city']}, {location['state']}, {location['country']}"
     data['postal code'] = res['location']['postcode']
     data['username'] = res['login']['username']
     data['email'] = res['email']
@@ -36,8 +38,10 @@ def format_data(res):
     return data
 
 # Streaming function
-# def stream_data():
-#     print(json.dumps(res, indent=3))
+def stream_data():
+    data = get_data()
+    res = format_data(data)
+    print(json.dumps(res, ensure_ascii=False, indent=3))
 
 # Create DAG
 # with DAG("user_automation",
@@ -50,5 +54,4 @@ def format_data(res):
 #         python_callable=stream_data()
 #     )
 
-data = get_data()
-print(format_data(data))
+stream_data()
