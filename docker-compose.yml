@@ -88,6 +88,8 @@ services:
         condition: service_healthy
       schema-registry:
         condition: service_healthy
+    ports:
+      - "9021:9021"
     environment:
       CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
       CONTROL_CENTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
@@ -97,5 +99,10 @@ services:
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       CONFLUENT_METRICS_ENABLE: 'false'
       PORT: 9021
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9021/health"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
     networks:
       - the_wire
