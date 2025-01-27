@@ -2,6 +2,7 @@
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator         # Used to fecth our data
+from kafka import KafkaProducer
 import json
 import requests
 
@@ -42,6 +43,9 @@ def stream_data():
     data = get_data()
     res = format_data(data)
     print(json.dumps(res, ensure_ascii=False, indent=3))
+
+    producer = KafkaProducer(bootstrap_servers=['localhost:9092'], max_block_ms=10000)
+    producer.send("user_created", json.dumps(res).encode("utf-8"))
 
 # Create DAG
 # with DAG("user_automation",
