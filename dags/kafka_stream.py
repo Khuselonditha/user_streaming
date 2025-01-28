@@ -5,11 +5,13 @@ from airflow.operators.python import PythonOperator         # Used to fecth our 
 from kafka import KafkaProducer
 import json
 import requests
+import logging
+import time
 
 # Setting default args for our DAG
 default_args = {
     "owner": 'khuselo',
-    "start_date": datetime(2025, 1, 21, 17, 00) 
+    "start_date": datetime(2025, 1, 28, 17, 00) 
 }
 
 # Get data function
@@ -38,24 +40,39 @@ def format_data(res):
 
     return data
 
+
 # Streaming function
 def stream_data():
-    data = get_data()
-    res = format_data(data)
-    print(json.dumps(res, ensure_ascii=False, indent=3))
+    # create_topic_if_not_exists()  # Ensure the topic exists
+    producer = KafkaProducer(bootstrap_servers=['broker:29092'], max_block_ms=5000)
+    current_time = time.time()
+    
+    try:
+        while True:
+            if time.time() > current_time + 60: # A minute
+                break
+            try:
+                data = get_data()
+                logging.info(f"Fetched data: {data}")
+                res = format_data(data)
+                logging.info(f"Formatted data: {res}")
 
-    producer = KafkaProducer(bootstrap_servers=['localhost:9092'], max_block_ms=10000)
-    producer.send("user_created", json.dumps(res).encode("utf-8"))
+                producer.send("user_created", json.dumps(res).encode("utf-8"))
+                logging.info("Data successfully sent to Kafka.")
+            except Exception as e:
+                logging.error(f"An error occured: {e}")
+                continue
+    finally:
+        producer.close()
+
 
 # Create DAG
-# with DAG("user_automation",
-#         default_args=default_args,
-#         schedule_interval='@daily',
-#         catchup=False) as dag:
+with DAG("user_automation",
+        default_args=default_args,
+        schedule_interval='@daily',
+        catchup=False) as dag:
     
-#     streaming_task = PythonOperator(
-#         task_id= 'stream_data_from_api',
-#         python_callable=stream_data()
-#     )
-
-# stream_data()
+    streaming_task = PythonOperator(
+        task_id= 'stream_data_from_api',
+        python_callable=stream_data
+    )
