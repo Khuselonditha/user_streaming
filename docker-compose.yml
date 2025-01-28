@@ -135,4 +135,17 @@ services:
       start_period: 30s
     networks:
       - the_wire
-    
+  
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - the_wire    
