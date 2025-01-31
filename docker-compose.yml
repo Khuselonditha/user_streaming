@@ -170,7 +170,7 @@ services:
       - the_wire
 
   spark-master:
-    image: bitnami/spark;latest
+    image: bitnami/spark:latest
     container_name: spark-master
     command: bin/spark-class org.apache.spark.deploy.master.Master
     ports:
