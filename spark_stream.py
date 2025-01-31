@@ -21,3 +21,5 @@ def create_cassandra_connection():
     """Create a cassandra connection"""
 
 
+if __name__ == "__main__":
+    spark_conn = create_spark_connection()
