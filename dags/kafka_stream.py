@@ -31,7 +31,7 @@ def format_data(res):
     data['gender'] = res['gender']
     data['address'] = f"{str(location['street']['number'])} {location['street']['name']}," \
                       f" {location['city']}, {location['state']}, {location['country']}"
-    data['postal code'] = res['location']['postcode']
+    data['postal_code'] = res['location']['postcode']
     data['username'] = res['login']['username']
     data['email'] = res['email']
     data['phone'] = res['phone']
