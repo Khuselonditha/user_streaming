@@ -16,6 +16,22 @@ def insert_data(session):
 
 def create_spark_connection():
     """Create spark connection"""
+    s_conn = None
+
+    try:
+        s_conn = (SparkSession.builder
+                    .appName("SparkUserstreaming")
+                    .config("spark.jars.packages", "com.datastax.spark:spark-cassandra-connector_2.13:3.5.1",
+                                                    "org.apache.spark:spark-sql-kafka-0-10_2.13:3.5.4")
+                    .config("spark.cassandra.connection.host", "localhost")
+                    .getOrCreate())
+
+        s_conn.sparkContext.setLog.Level("Error")
+        logging.info("Spark connection created successfully!")
+    except Exception as e:
+        logging.error(f"Couldn't create the spark connection due to {e}")
+
+    return s_conn
 
 def create_cassandra_connection():
     """Create a cassandra connection"""
