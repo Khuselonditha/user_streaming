@@ -34,8 +34,22 @@ def create_table(session):
 
     print("Table created successfully!")
 
-def insert_data(session):
+def insert_data(session, **kwargs):
     """Insert data here"""
+    print("Inserting Data....")
+
+    user_id = kwargs.get('id')
+    first_name = kwargs.get('first_name')
+    last_name = kwargs.get('last_name')
+    dob = kwargs.get('dob')
+    gender = kwargs.get('gender')
+    address = kwargs.get('address')
+    postal_code = kwargs.get('postal_code')
+    username = kwargs.get('username')
+    email = kwargs.get('email')
+    phone = kwargs.get('phone')
+    registered_date = kwargs.get('registered_date')
+    picture = kwargs.get('picture')
 
 def create_spark_connection():
     """Create spark connection"""
