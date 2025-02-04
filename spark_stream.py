@@ -16,6 +16,23 @@ def create_keyspace(session):
 
 def create_table(session):
     """Create a table here"""
+    session.execute("""
+        CREATE TABLE IF NOT EXISTS spark_user_streams.created_users
+        id UUID PRIMARY KEY,
+        first_name TEXT,
+        last_name TEXT,
+        dob TEXT,
+        gender TEXT,
+        address TEXT,
+        postal_code TEXT,
+        username TEXT,
+        email TEXT,
+        phone TEXT,
+        registered_date TEXT,
+        picture TEXT;
+    """)
+
+    print("Table created successfully!")
 
 def insert_data(session):
     """Insert data here"""
