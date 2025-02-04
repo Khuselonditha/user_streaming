@@ -7,6 +7,12 @@ from pyspark.sql.functions import from_json, col
 
 def create_keyspace(session):
     """Create keyspace here"""
+    session.execute("""
+        CREATE KEYSPACE IF NOT EXISTS spark_user_streams
+        WITH replication = {'class': 'Simple Strategy', 'replication_factor': '1'};
+    """)
+
+    print("Keyspace created successfully!")
 
 def create_table(session):
     """Create a table here"""
