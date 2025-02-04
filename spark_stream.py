@@ -52,16 +52,18 @@ def insert_data(session, **kwargs):
     picture = kwargs.get('picture')
 
     try:
-        session.execute("""
+
+        query = """
             INSERT INTO spark_user_streams.created_users(id, first_name, last_name, dob,
                 gender, address, postal_code, username, email, phone, registered_date, picture)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                    """, (user_id, first_name, last_name, dob, gender, address, postal_code,
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+        session.execute(query, (user_id, first_name, last_name, dob, gender, address, postal_code,
                           username, email, phone, registered_date, picture))
         
         logging.info(f"Data Inserted for {first_name} {last_name}")
     except Exception as e:
-        logging.error(f"Could not insert data due to {e}")
+        logging.error(f"Could not insert data due to: {e}")
 
 def create_spark_connection():
     """Create spark connection"""
