@@ -38,8 +38,8 @@ def create_cassandra_connection():
     try:
         cluster = Cluster(["localhost"])
 
-        session = cluster.connect()
-        return session
+        cass_session = cluster.connect()
+        return cass_session
     except Exception as e:
         logging.error(f"Couldn't create the spark connection due to {e}")
         return None
@@ -48,3 +48,9 @@ def create_cassandra_connection():
 if __name__ == "__main__":
     spark_conn = create_spark_connection()
 
+    if spark_conn is not None:
+        session = create_cassandra_connection()
+
+        if session is not None:
+            create_keyspace(session)
+            create_table(session)
