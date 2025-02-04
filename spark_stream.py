@@ -51,6 +51,15 @@ def insert_data(session, **kwargs):
     registered_date = kwargs.get('registered_date')
     picture = kwargs.get('picture')
 
+    required_fields = ['id', 'first_name', 'last_name', 'dob', 'gender', 'address',
+                       'postal_code', 'username', 'email', 'phone', 'registered_date',
+                       'picture']
+    
+    for field in required_fields:
+        if field not in kwargs:
+            logging.error(f"Missing required field: {field}")
+            return
+
     try:
 
         query = """
