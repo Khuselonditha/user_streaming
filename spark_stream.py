@@ -130,9 +130,12 @@ def create_cassandra_connection():
 
 
 if __name__ == "__main__":
+    # Create spark connection
     spark_conn = create_spark_connection()
 
     if spark_conn is not None:
+        # Connect to Kafka using spark connection
+        df = connect_to_kafka(spark_conn)
         session = create_cassandra_connection()
 
         if session is not None:
