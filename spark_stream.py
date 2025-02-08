@@ -9,7 +9,7 @@ def create_keyspace(session):
     """Create keyspace here"""
     session.execute("""
         CREATE KEYSPACE IF NOT EXISTS spark_user_streams
-        WITH replication = {'class': 'Simple Strategy', 'replication_factor': '1'};
+        WITH replication = {'class': 'Simple Strategy', 'replication_factor': 1};
     """)
 
     print("Keyspace created successfully!")
