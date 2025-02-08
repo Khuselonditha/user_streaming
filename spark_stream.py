@@ -101,7 +101,7 @@ def create_cassandra_connection():
         cass_session = cluster.connect()
         return cass_session
     except Exception as e:
-        logging.error(f"Couldn't create the spark connection due to {e}")
+        logging.error(f"Couldn't create the cassandra connection due to {e}")
         return None
 
 
