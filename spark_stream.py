@@ -5,6 +5,7 @@ from cassandra.cluster import Cluster
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col
 
+
 def create_keyspace(session):
     """Create keyspace here"""
     session.execute("""
@@ -13,6 +14,7 @@ def create_keyspace(session):
     """)
 
     print("Keyspace created successfully!")
+
 
 def create_table(session):
     """Create a table here"""
@@ -33,6 +35,7 @@ def create_table(session):
     """)
 
     print("Table created successfully!")
+
 
 def insert_data(session, **kwargs):
     """Insert data here"""
@@ -73,6 +76,7 @@ def insert_data(session, **kwargs):
         logging.info(f"Data Inserted for {first_name} {last_name}")
     except Exception as e:
         logging.error(f"Could not insert data due to: {e}")
+
 
 def create_spark_connection():
     """Create spark connection"""
@@ -121,6 +125,7 @@ def create_cassandra_connection():
         return cass_session
     except Exception as e:
         logging.error(f"Couldn't create the cassandra connection due to {e}")
+
         return None
 
 
