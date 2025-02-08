@@ -93,6 +93,23 @@ def create_spark_connection():
 
     return s_conn
 
+
+def connect_to_kafka(spark_Connection):
+    """Create kafka connection"""
+    spark_df = None
+
+    try:
+        spark_df = (spark_Connection.readStream
+            .format('kafka')
+            .option('kafka.bootstrap.servers', 'localhost:9092')
+            .option('subscribe', 'users_created')
+            .option('startingOffsets', 'earliest')
+            .load())
+        logging.info("kafka dataframe created successfully")
+    except Exception as e:
+        logging.warning(f"Kafka dataframe could not be created because: {e}")
+
+
 def create_cassandra_connection():
     """Create a cassandra connection"""
     try:
