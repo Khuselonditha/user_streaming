@@ -86,7 +86,7 @@ def create_spark_connection():
                     .config("spark.cassandra.connection.host", "localhost")
                     .getOrCreate())
 
-        s_conn.sparkContext.setLog.Level("Error")
+        s_conn.sparkContext.setLogLevel("Error")
         logging.info("Spark connection created successfully!")
     except Exception as e:
         logging.error(f"Couldn't create the spark connection due to {e}")
