@@ -149,7 +149,6 @@ def create_selection_from_kafka(spark_df):
     
     sel = (spark_df.selExpr("CAST(value AS STRING)")
            .select(from_json(col('value'), schema).alias('data')).select("data.*"))
-    
     print(sel)
 
     return sel
@@ -162,8 +161,17 @@ if __name__ == "__main__":
     if spark_conn is not None:
         # Connect to Kafka using spark connection
         df = connect_to_kafka(spark_conn)
+        selection_df = create_selection_from_kafka(spark_conn)
         session = create_cassandra_connection()
 
         if session is not None:
             create_keyspace(session)
             create_table(session)
+
+            streaming_query = (selection_df.writeStream.format("org.apache.spark.sql.cassandra")
+                               .option('checkpointLocation', '/tmp/checkpoint')
+                               .option('keyspace', 'spark_user_streams')
+                               .option('table', 'created_users')
+                               .start())
+            
+            streaming_query.awaitTermination()
