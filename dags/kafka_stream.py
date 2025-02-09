@@ -57,7 +57,7 @@ def stream_data():
                 res = format_data(data)
                 logging.info(f"Formatted data: {res}")
 
-                producer.send("user_created", json.dumps(res).encode("utf-8"))
+                producer.send("users_created", json.dumps(res).encode("utf-8"))
                 logging.info("Data successfully sent to Kafka.")
             except Exception as e:
                 logging.error(f"An error occured: {e}")
