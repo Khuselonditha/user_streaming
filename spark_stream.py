@@ -86,7 +86,7 @@ def create_spark_connection():
     try:
         s_conn = (SparkSession.builder
                     .appName("SparkUserstreaming")
-                    .config("spark.jars.packages", "com.datastax.spark:spark-cassandra-connector_2.13:3.5.1",
+                    .config("spark.jars.packages", "com.datastax.spark:spark-cassandra-connector_2.13:3.5.1,"
                                                     "org.apache.spark:spark-sql-kafka-0-10_2.13:3.5.4")
                     .config("spark.cassandra.connection.host", "localhost")
                     .getOrCreate())
@@ -147,7 +147,7 @@ def create_selection_from_kafka(spark_df):
         StructField("picture", StringType(), False)
         ])
     
-    sel = (spark_df.selExpr("CAST(value AS STRING)")
+    sel = (spark_df.selectExpr("CAST(value AS STRING)")
            .select(from_json(col('value'), schema).alias('data')).select("data.*"))
     print(sel)
 
