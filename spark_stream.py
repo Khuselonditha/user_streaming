@@ -4,6 +4,7 @@ from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import Cluster
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col
+from pyspark.sql.types import StringType, StructField, StructType
 
 
 def create_keyspace(session):
@@ -127,6 +128,31 @@ def create_cassandra_connection():
         logging.error(f"Couldn't create the cassandra connection due to {e}")
 
         return None
+
+
+def create_selection_from_kafka(spark_df):
+    # A schema for selecting data from kafka to cassandra
+    schema = StructType([
+        StructField("id", StringType(), False),
+        StructField("first_name", StringType(), False),
+        StructField("last_name", StringType(), False),
+        StructField("dob", StringType(), False),
+        StructField("gender", StringType(), False),
+        StructField("address", StringType(), False),
+        StructField("postal_code", StringType(), False),
+        StructField("username", StringType(), False),
+        StructField("email", StringType(), False),
+        StructField("phone", StringType(), False),
+        StructField("registered_date", StringType(), False),
+        StructField("picture", StringType(), False)
+        ])
+    
+    sel = (spark_df.selExpr("CAST(value AS STRING)")
+           .select(from_json(col('value'), schema).alias('data')).select("data.*"))
+    
+    print(sel)
+
+    return sel
 
 
 if __name__ == "__main__":
