@@ -160,8 +160,8 @@ if __name__ == "__main__":
 
     if spark_conn is not None:
         # Connect to Kafka using spark connection
-        df = connect_to_kafka(spark_conn)
-        selection_df = create_selection_from_kafka(spark_conn)
+        spark_df = connect_to_kafka(spark_conn)
+        selection_df = create_selection_from_kafka(spark_df)
         session = create_cassandra_connection()
 
         if session is not None:
