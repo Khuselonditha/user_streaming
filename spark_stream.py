@@ -120,7 +120,7 @@ def connect_to_kafka(spark_Connection):
 def create_cassandra_connection():
     """Create a cassandra connection"""
     try:
-        cluster = Cluster(["localhost"])
+        cluster = Cluster(['localhost'])
 
         cass_session = cluster.connect()
         return cass_session
@@ -158,22 +158,28 @@ if __name__ == "__main__":
     # Create spark connection
     spark_conn = create_spark_connection()
 
-    if spark_conn is not None:
-        # Connect to Kafka using spark connection
-        spark_df = connect_to_kafka(spark_conn)
-        selection_df = create_selection_from_kafka(spark_df)
-        session = create_cassandra_connection()
+    if spark_conn is None:
+        logging.error("Spark connection could not be established. Exiting...")
+        exit(1)
 
-        if session is not None:
-            create_keyspace(session)
-            create_table(session)
+    # Connect to Kafka using spark connection
+    spark_df = connect_to_kafka(spark_conn)
+    if spark_df is None:
+        logging.error("Kafka dataframe could not be created. Exiting...")
+        exit(1)
 
-            logging.info("Streaming is being started...")
+    selection_df = create_selection_from_kafka(spark_df)
+    session = create_cassandra_connection()
 
-            streaming_query = (selection_df.writeStream.format("org.apache.spark.sql.cassandra")
-                               .option('checkpointLocation', '/tmp/checkpoint')
-                               .option('keyspace', 'spark_user_streams')
-                               .option('table', 'created_users')
-                               .start())
-            
-            streaming_query.awaitTermination()
+    if session is not None:
+        create_keyspace(session)
+        create_table(session)
+
+        logging.info("Streaming is being started...")
+        streaming_query = (selection_df.writeStream.format("org.apache.spark.sql.cassandra")
+                           .option('checkpointLocation', '/tmp/checkpoint')
+                           .option('keyspace', 'spark_user_streams')
+                           .option('table', 'created_users')
+                           .start())
+        
+        streaming_query.awaitTermination()
