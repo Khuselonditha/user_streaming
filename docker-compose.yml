@@ -50,6 +50,9 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+      # Add these configurations to handle larger messages
+      KAFKA_SOCKET_REQUEST_MAX_BYTES: 1048576000  # Increase to 1 GB
+      KAFKA_MESSAGE_MAX_BYTES: 1048576000         # Increase to 1 GB
     networks:
       - the_wire
     healthcheck:
