@@ -86,9 +86,12 @@ def create_spark_connection():
     try:
         s_conn = (SparkSession.builder
                     .appName("SparkUserstreaming")
-                    .config("spark.jars.packages", "com.datastax.spark:spark-cassandra-connector_2.13:3.5.1,"
-                                                    "org.apache.spark:spark-sql-kafka-0-10_2.13:3.5.4")
+                    .config('spark.jars.packages', "com.datastax.spark:spark-cassandra-connector_2.12:3.5.1,"
+                                           "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,"
+                                           "org.apache.kafka:kafka-clients:3.9.0")
                     .config("spark.cassandra.connection.host", "localhost")
+                    .config("spark.cassandra.connection.port", "9042")  # Explicitly set port
+
                     .getOrCreate())
 
         s_conn.sparkContext.setLogLevel("Error")
@@ -104,15 +107,19 @@ def connect_to_kafka(spark_Connection):
     spark_df = None
 
     try:
-        spark_df = (spark_Connection.readStream
-            .format('kafka')
-            .option('kafka.bootstrap.servers', 'localhost:9092')
-            .option('subscribe', 'users_created')
-            .option('startingOffsets', 'earliest')
-            .load())
-        logging.info("kafka dataframe created successfully")
+        logging.info("Attempting to create Kafka DataFrame...")
+        spark_df = spark_conn.readStream \
+            .format('kafka') \
+            .option('kafka.bootstrap.servers', 'localhost:9092') \
+            .option('subscribe', 'users_created') \
+            .option('startingOffsets', 'earliest') \
+            .load()
+        logging.info("Kafka DataFrame created successfully")
     except Exception as e:
-        logging.warning(f"Kafka dataframe could not be created because: {e}")
+        logging.error(f"Kafka DataFrame could not be created because: {e}")
+        logging.error("Please check if the Kafka server is running and accessible at 'localhost:9092'.")
+        logging.error("Ensure that the topic 'users_created' exists and has data.")
+        logging.error("Verify the network connectivity and permissions.")
 
     return spark_df
 
