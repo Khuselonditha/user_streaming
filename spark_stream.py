@@ -86,9 +86,8 @@ def create_spark_connection():
     try:
         s_conn = (SparkSession.builder
                     .appName("SparkUserstreaming")
-                    .config('spark.jars.packages', "com.datastax.spark:spark-cassandra-connector_2.12:3.5.1,"
-                                           "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,"
-                                           "org.apache.kafka:kafka-clients:3.9.0")
+                    .config('spark.jars.packages', "com.datastax.spark:spark-cassandra-connector_2.12:3.4.1,"
+                                           "org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.1")
                     .config("spark.cassandra.connection.host", "localhost")
                     .config("spark.cassandra.connection.port", "9042")  # Explicitly set port
 
@@ -102,13 +101,13 @@ def create_spark_connection():
     return s_conn
 
 
-def connect_to_kafka(spark_Connection):
+def connect_to_kafka(spark_connection):
     """Create kafka connection"""
     spark_df = None
 
     try:
         logging.info("Attempting to create Kafka DataFrame...")
-        spark_df = spark_conn.readStream \
+        spark_df = spark_connection.readStream \
             .format('kafka') \
             .option('kafka.bootstrap.servers', 'localhost:9092') \
             .option('subscribe', 'users_created') \
