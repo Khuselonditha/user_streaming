@@ -51,8 +51,15 @@ def create_table(session):
 
 
 def insert_data(session, **kwargs):
-    """Insert data here"""
-    print("Inserting Data....")
+    """
+    Inserts user data into the Cassandra table.
+    Args:
+        session: Cassandra session object.
+        **kwargs: Dictionary containing user data fields.
+    Returns:
+        None
+    """
+    logging.info("Inserting Data....")
 
     user_id = kwargs.get('id')
     first_name = kwargs.get('first_name')
@@ -77,10 +84,7 @@ def insert_data(session, **kwargs):
             return
 
     try:
-
-         # Convert 'id' to UUID if it's not already
         user_id = uuid.UUID(user_id)  # This ensures the id is a valid UUID
-
 
         query = """
             INSERT INTO spark_user_streams.created_users(id, first_name, last_name, dob,
