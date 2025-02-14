@@ -24,7 +24,13 @@ def create_keyspace(session):
     logging.info("Keyspace created successfully!")
 
 def create_table(session):
-    """Create a table here"""
+    """
+    Creates a table in Cassandra if it does not exist.
+    Args:
+        session: Cassandra session object.
+    Returns:
+        None
+    """
     session.execute("""
         CREATE TABLE IF NOT EXISTS spark_user_streams.created_users(
         id UUID PRIMARY KEY,
@@ -41,7 +47,7 @@ def create_table(session):
         picture TEXT);
     """)
 
-    print("Table created successfully!")
+    logging.info("Table created successfully!")
 
 
 def insert_data(session, **kwargs):
