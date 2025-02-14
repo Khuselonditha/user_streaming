@@ -1,20 +1,27 @@
 import logging
 
 from cassandra.cluster import Cluster
+from cassandra.policies import ConstantReconnectionPolicy
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col
 from pyspark.sql.types import StringType, StructField, StructType
+import uuid
 
 
 def create_keyspace(session):
-    """Create keyspace here"""
+    """
+    Creates a keyspace in Cassandra if it does not exist.
+    Args:
+        session: Cassandra session object.
+    Returns:
+        None
+    """
     session.execute("""
         CREATE KEYSPACE IF NOT EXISTS spark_user_streams
         WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'};
     """)
 
-    print("Keyspace created successfully!")
-
+    logging.info("Keyspace created successfully!")
 
 def create_table(session):
     """Create a table here"""
@@ -65,6 +72,10 @@ def insert_data(session, **kwargs):
 
     try:
 
+         # Convert 'id' to UUID if it's not already
+        user_id = uuid.UUID(user_id)  # This ensures the id is a valid UUID
+
+
         query = """
             INSERT INTO spark_user_streams.created_users(id, first_name, last_name, dob,
                 gender, address, postal_code, username, email, phone, registered_date, picture)
@@ -84,13 +95,12 @@ def create_spark_connection():
 
     try:
         s_conn = (SparkSession.builder
-                    .appName("SparkUserstreaming")
-                    .config('spark.jars', "jars/spark-cassandra-connector_2.12:3.4.1.jar,"
-                                           "jars/spark-sql-kafka-0-10_2.12:3.4.1.jar")
-                    .config("spark.cassandra.connection.host", "localhost")
-                    .config("spark.cassandra.connection.port", "9042")  # Explicitly set port
-
-                    .getOrCreate())
+            .appName('SparkDataStreaming') 
+            .config('spark.jars', "jars/spark-cassandra-connector_2.12-3.5.1.jar,"
+                                           "jars/spark-sql-kafka-0-10_2.12-3.5.1.jar")
+            .config('spark.cassandra.connection.host', 'localhost')
+            .config("spark.cassandra.connection.port", "9042")
+            .getOrCreate())
 
         s_conn.sparkContext.setLogLevel("Error")
         logging.info("Spark connection created successfully!")
