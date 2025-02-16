@@ -110,8 +110,8 @@ def create_spark_connection():
     try:
         s_conn = (SparkSession.builder
             .appName('SparkDataStreaming') 
-            .config('spark.jars', "jars/spark-cassandra-connector_2.12-3.5.1.jar,"
-                                           "jars/spark-sql-kafka-0-10_2.12-3.5.1.jar")
+            .config('spark.jars.packages', "com.datastax.spark:spark-cassandra-connector_2.12:3.5.1,"
+                                           "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1")
             .config('spark.cassandra.connection.host', 'localhost')
             .config("spark.cassandra.connection.port", "9042")
             .getOrCreate())
