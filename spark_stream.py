@@ -125,7 +125,13 @@ def create_spark_connection():
 
 
 def connect_to_kafka(spark_connection):
-    """Create kafka connection"""
+    """
+    Extract and structure data from the Kafka DataFrame.
+    Args:
+        spark_df (DataFrame): The streaming DataFrame containing Kafka messages.
+    Returns:
+        DataFrame: A DataFrame with structured data extracted from Kafka.
+    """
     spark_df = None
 
     try:
@@ -139,9 +145,6 @@ def connect_to_kafka(spark_connection):
         logging.info("Kafka DataFrame created successfully")
     except Exception as e:
         logging.error(f"Kafka DataFrame could not be created because: {e}")
-        logging.error("Please check if the Kafka server is running and accessible at 'localhost:9092'.")
-        logging.error("Ensure that the topic 'users_created' exists and has data.")
-        logging.error("Verify the network connectivity and permissions.")
 
     return spark_df
 
