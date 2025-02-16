@@ -2,91 +2,59 @@
 
 ## Table of Contents
 - [Overview](#Overview)
-- [System Architecture](#system-architecture)
-- [What You'll Learn](#what-youll-learn)
-- [Technologies](#technologies)
+- [System Architecture](#System-Architecture)
+- [Technologies](#Technologies)
 - [Getting Started](#getting-started)
-- [Watch the Video Tutorial](#watch-the-video-tutorial)
 
 ## Overview
-This project implements a real-time user data streaming pipeline using **Apache Spark**, **Apache Kafka**, and **Apache Cassandra**. The pipeline ingests user creation events from Kafka, processes them with Spark Structured Streaming, and stores them in a Cassandra database.
+This is an end-to-end data engineering pipeline. It covers each stage from data ingestion to processing and finally to storage, utilizing a robust tech stack that includes Apache Airflow, Python, Apache Kafka, Apache Zookeeper, Apache Spark, and Cassandra. Everything is containerized using Docker for ease of deployment and scalability.
 
 ## System Architecture
 
-![System Architecture](https://git@github.com:Khuselonditha/user_streaming.git/Data%20engineering%20architecture.png)
+![System Architecture](Data_engineering_architecture.png)
 
-## Folder Structure
-```
-/home/khuselo/my_work/side_things/user_streaming/
-├── jars/                      # Required JARs for Spark
-│   ├── spark-cassandra-connector_2.13-3.5.1.jar
-│   └── spark-sql-kafka-0-10_2.12-3.5.1.jar
-├── scripts/                   # Helper scripts
-│   ├── entrypoint.sh          # Shell script for container entrypoint
-├── spark_stream.py            # Main Spark streaming script
-├── docker-compose.yml         # Docker setup for Kafka, Spark, and Cassandra
-├── requirements.txt           # Python dependencies
-```
+The project is designed with the following components:
 
-## Dependencies
-Make sure you have the following installed:
-- **Python 3.8+**
-- **Apache Spark 3.5.1**
-- **Apache Kafka**
-- **Apache Cassandra**
-- **Docker & Docker Compose** (for containerized setup)
+- **Data Source**: We use `randomuser.me` API to generate random user data for our pipeline.
+- **Apache Airflow**: Responsible for orchestrating the pipeline and storing fetched data in a PostgreSQL database.
+- **Apache Kafka and Zookeeper**: Used for streaming data from PostgreSQL to the processing engine.
+- **Control Center and Schema Registry**: Helps in monitoring and schema management of our Kafka streams.
+- **Apache Spark**: For data processing with its master and worker nodes.
+- **Cassandra**: Where the processed data will be stored.
 
-### Python Packages (Install via `pip`)
-```sh
-pip install -r requirements.txt
-```
+## Technologies
 
-## Setup & Usage
-### 1. Start Services using Docker
-Ensure Docker is installed and run:
-```sh
-docker-compose up -d
-```
+- Apache Airflow
+- Python
+- Apache Kafka
+- Apache Zookeeper
+- Apache Spark
+- Cassandra
+- PostgreSQL
+- Docker
 
-### 2. Run Spark Streaming Application
-```sh
-python spark_stream.py
-```
 
-## How It Works
-1. **Kafka Topic** (`users_created`) receives user creation events.
-2. **Spark Structured Streaming** reads from Kafka, processes the JSON messages, and extracts user details.
-3. **Cassandra** stores structured user data in the `spark_user_streams.created_users` table.
+## Getting Started
 
-## Cassandra Schema
-```sql
-CREATE TABLE IF NOT EXISTS spark_user_streams.created_users (
-    id UUID PRIMARY KEY,
-    first_name TEXT,
-    last_name TEXT,
-    dob TEXT,
-    gender TEXT,
-    address TEXT,
-    postal_code TEXT,
-    username TEXT,
-    email TEXT,
-    phone TEXT,
-    registered_date TEXT,
-    picture TEXT
-);
-```
+1. Clone the repository:
+    ```bash
+    git clone git@github.com:Khuselonditha/user_streaming.git
+    ```
 
-## Environment Variables
-| Variable       | Description                     |
-|---------------|---------------------------------|
-| KAFKA_BROKER  | Kafka bootstrap servers (e.g. `localhost:9092`) |
-| CASSANDRA_HOST| Cassandra host (e.g. `localhost`) |
+2. Navigate to the project directory:
+    ```bash
+    cd user_streaming
+    ```
 
-## Logging & Debugging
-To view logs, run:
-```sh
-tail -f logs/spark_stream.log
-```
+3. Run Docker Compose to spin up the services:
+    ```bash
+    docker-compose up -d
+    ```
+
+4. Run Spark Streaming Application
+    ```bash
+    python spark_stream.py
+    ```
 
 ## Contributing
 Feel free to open issues or create pull requests for improvements.

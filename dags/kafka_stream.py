@@ -1,4 +1,3 @@
-# imports
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator         # Used to fecth our data
@@ -14,15 +13,26 @@ default_args = {
     "start_date": datetime(2025, 1, 28, 17, 00) 
 }
 
-# Get data function
+
 def get_data():
+    """
+    Fetches random user data from the randomuser.me API.
+    Returns:
+        dict: A dictionary containing user data.
+    """
     res = requests.get('https://randomuser.me/api/')
     res = res.json()['results'][0]
 
     return res
 
-# format data function
 def format_data(res):
+    """
+    Formats the raw user data into a structured dictionary.
+    Args:
+        res (dict): The raw user data.
+    Returns:
+        dict: A dictionary containing formatted user data.
+    """
     data = {}
     location = res['location']
     data['first_name'] = res['name']['first']
@@ -40,10 +50,16 @@ def format_data(res):
 
     return data
 
-
-# Streaming function
 def stream_data():
-    # create_topic_if_not_exists()  # Ensure the topic exists
+    """
+    Streams formatted user data to a Kafka topic.
+    
+    This function fetches data from the randomuser.me API, formats it, and sends it to a Kafka topic named 'users_created'.
+    The streaming runs for 60 seconds.
+
+    Raises:
+        Exception: If there is an error in fetching, formatting, or sending data.
+    """
     producer = KafkaProducer(bootstrap_servers=['broker:29092'], max_block_ms=5000)
     current_time = time.time()
     
@@ -64,15 +80,3 @@ def stream_data():
                 continue
     finally:
         producer.close()
-
-
-# Create DAG
-with DAG("user_automation",
-        default_args=default_args,
-        schedule_interval='@daily',
-        catchup=False) as dag:
-    
-    streaming_task = PythonOperator(
-        task_id= 'stream_data_from_api',
-        python_callable=stream_data
-    )
