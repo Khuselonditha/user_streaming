@@ -1,7 +1,19 @@
-# User Streaming with Spark, Kafka, and Cassandra
+# User Streaming | End-to-End Data Engineering Project
+
+## Table of Contents
+- [Overview](#Overview)
+- [System Architecture](#system-architecture)
+- [What You'll Learn](#what-youll-learn)
+- [Technologies](#technologies)
+- [Getting Started](#getting-started)
+- [Watch the Video Tutorial](#watch-the-video-tutorial)
 
 ## Overview
 This project implements a real-time user data streaming pipeline using **Apache Spark**, **Apache Kafka**, and **Apache Cassandra**. The pipeline ingests user creation events from Kafka, processes them with Spark Structured Streaming, and stores them in a Cassandra database.
+
+## System Architecture
+
+![System Architecture](https://git@github.com:Khuselonditha/user_streaming.git/Data%20engineering%20architecture.png)
 
 ## Folder Structure
 ```
