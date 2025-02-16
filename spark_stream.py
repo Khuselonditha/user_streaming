@@ -167,7 +167,13 @@ def create_cassandra_connection():
 
 
 def create_selection_from_kafka(spark_df):
-    # A schema for selecting data from kafka to cassandra
+    """
+    Extract and structure data from the Kafka DataFrame.
+    Args:
+        spark_df (DataFrame): The streaming DataFrame containing Kafka messages.
+    Returns:
+        DataFrame: A DataFrame with structured data extracted from Kafka.
+    """
     schema = StructType([
         StructField("id", StringType(), False),
         StructField("first_name", StringType(), False),
@@ -191,7 +197,6 @@ def create_selection_from_kafka(spark_df):
 
 
 if __name__ == "__main__":
-    # Create spark connection
     spark_conn = create_spark_connection()
 
     if spark_conn is None:
