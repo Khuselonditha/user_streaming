@@ -150,7 +150,11 @@ def connect_to_kafka(spark_connection):
 
 
 def create_cassandra_connection():
-    """Create a cassandra connection"""
+    """
+    Create and return a Cassandra connection.
+    Returns:
+        cassandra.cluster.Session: A Cassandra session object if successful, otherwise None.
+    """
     try:
         cluster = Cluster(['localhost'])
 
