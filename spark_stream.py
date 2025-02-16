@@ -100,7 +100,11 @@ def insert_data(session, **kwargs):
 
 
 def create_spark_connection():
-    """Create spark connection"""
+    """
+    Create and return a Spark connection.
+    Returns:
+        SparkSession: A SparkSession instance if successful, otherwise None.
+    """
     s_conn = None
 
     try:
